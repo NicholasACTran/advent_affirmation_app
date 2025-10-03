@@ -14,8 +14,8 @@ const schema = a.schema({
       email: a.email().required(),
       firstName: a.string(),
       lastName: a.string(),
-      receivedCalendars: a.hasMany('Calendar', 'receiverEmail'),
-      sentCalendars: a.hasMany('Calendar', 'senderEmail'),
+      // receivedCalendars: a.hasMany('Calendar', 'receiverEmail'),
+      // sentCalendars: a.hasMany('Calendar', 'senderEmail'),
       profileOwner: a.string(),
     })
     .identifier(['email'])
