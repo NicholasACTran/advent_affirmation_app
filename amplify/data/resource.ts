@@ -23,30 +23,30 @@ const schema = a.schema({
       allow.ownerDefinedIn("profileOwner")
     ]),
     
-  Calendar: a
-    .model({
-      senderEmail: a.email().required(),
-      receiverEmail: a.email().required(),
-      title: a.string(),
-      message: a.string(),
-      numOfAffirmations: a.integer().required(),
-      currentAffirmation: a.integer().required(),
-      lastOpened: a.datetime().required(),
-      receiver: a.belongsTo('User', 'receiverEmail'),
-      sender: a.belongsTo('User', 'senderEmail'),
-      affirmations: a.hasMany('Affirmation', 'calendarId')
-    })
-    .authorization((allow) => allow.publicApiKey()),
+  // Calendar: a
+  //   .model({
+  //     senderEmail: a.email().required(),
+  //     receiverEmail: a.email().required(),
+  //     title: a.string(),
+  //     message: a.string(),
+  //     numOfAffirmations: a.integer().required(),
+  //     currentAffirmation: a.integer().required(),
+  //     lastOpened: a.datetime().required(),
+  //     receiver: a.belongsTo('User', 'receiverEmail'),
+  //     sender: a.belongsTo('User', 'senderEmail'),
+  //     affirmations: a.hasMany('Affirmation', 'calendarId')
+  //   })
+  //   .authorization((allow) => allow.publicApiKey()),
   
-  Affirmation: a
-    .model({
-      calendarId: a.id().required(),
-      day: a.integer().required(),
-      message: a.string().required().default(""),
-      calendar: a.belongsTo('Calendar', 'calendarId')
-    })
-    .identifier(['calendarId', 'day'])
-    .authorization((allow) => allow.publicApiKey())
+  // Affirmation: a
+  //   .model({
+  //     calendarId: a.id().required(),
+  //     day: a.integer().required(),
+  //     message: a.string().required().default(""),
+  //     calendar: a.belongsTo('Calendar', 'calendarId')
+  //   })
+  //   .identifier(['calendarId', 'day'])
+  //   .authorization((allow) => allow.publicApiKey())
   
 }).authorization(allow => [allow.resource(postConfirmation)]);
 
