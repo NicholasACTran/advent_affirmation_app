@@ -11,20 +11,20 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@aws-amplify/backend": "^1.16.1",
+    "@aws-amplify/backend-cli": "^1.8.0",
     "@aws-amplify/ui-vue": "^4.3.5",
     "aws-amplify": "^6.6.6",
+    "aws-cdk": "^2.1029.4",
+    "aws-cdk-lib": "^2.219.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
-    "@aws-amplify/backend": "^1.16.1",
-    "@aws-amplify/backend-cli": "^1.2.9",
     "@tsconfig/node20": "^20.1.4",
     "@types/aws-lambda": "^8.10.153",
     "@types/node": "^20.12.5",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/tsconfig": "^0.5.1",
-    "aws-cdk": "^2.137.0",
-    "aws-cdk-lib": "^2.137.0",
     "constructs": "^10.3.0",
     "esbuild": "^0.20.2",
     "npm-run-all2": "^6.1.2",
