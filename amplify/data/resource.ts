@@ -34,7 +34,7 @@ const schema = a.schema({
       lastOpened: a.datetime().required(),
       receiver: a.belongsTo('User', 'receiverEmail'),
       sender: a.belongsTo('User', 'senderEmail'),
-      affirmations: a.hasMany('Affirmation', ['calendarId', 'day'])
+      affirmations: a.hasMany('Affirmation', 'calendarId')
     })
     .authorization((allow) => allow.publicApiKey()),
   
@@ -43,7 +43,7 @@ const schema = a.schema({
       calendarId: a.id().required(),
       day: a.integer().required(),
       message: a.string().required().default(""),
-      calendar: a.belongsTo('Calendar', ['calendarId', 'day'])
+      calendar: a.belongsTo('Calendar', 'calendarId')
     })
     .identifier(['calendarId', 'day'])
     .authorization((allow) => allow.publicApiKey())
