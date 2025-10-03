@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import '@/assets/main.css';
 import { onMounted, ref } from 'vue';
 import type { Schema } from '../../amplify/data/resource';
@@ -52,4 +52,4 @@ function createTodo() {
       </a>
     </div>
   </main>
-</template>
+</template> -->

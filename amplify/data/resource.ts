@@ -14,39 +14,41 @@ const schema = a.schema({
       email: a.email().required(),
       firstName: a.string(),
       lastName: a.string(),
-      // receivedCalendars: a.hasMany('Calendar', 'receiverEmail'),
-      // sentCalendars: a.hasMany('Calendar', 'senderEmail'),
-      profileOwner: a.string(),
+      receivedCalendars: a.hasMany('Calendar', 'receiverId'),
+      sentCalendars: a.hasMany('Calendar', 'senderId'),
+      profileOwner: a.string().required(),
     })
-    .identifier(['email'])
+    .identifier(['profileOwner'])
     .authorization((allow) => [
-      allow.ownerDefinedIn("profileOwner")
+      allow.ownerDefinedIn("profileOwner").to(['create', 'read', 'delete'])
     ]),
     
-  // Calendar: a
-  //   .model({
-  //     senderEmail: a.email().required(),
-  //     receiverEmail: a.email().required(),
-  //     title: a.string(),
-  //     message: a.string(),
-  //     numOfAffirmations: a.integer().required(),
-  //     currentAffirmation: a.integer().required(),
-  //     lastOpened: a.datetime().required(),
-  //     receiver: a.belongsTo('User', 'receiverEmail'),
-  //     sender: a.belongsTo('User', 'senderEmail'),
-  //     affirmations: a.hasMany('Affirmation', 'calendarId')
-  //   })
-  //   .authorization((allow) => allow.publicApiKey()),
+  Calendar: a
+    .model({
+      senderId: a.string().required(),
+      receiverId: a.string().required(),
+      owners: a.string().array(),
+      title: a.string(),
+      message: a.string(),
+      numOfAffirmations: a.integer().required(),
+      currentAffirmation: a.integer().required(),
+      lastOpened: a.datetime().required(),
+      receiver: a.belongsTo('User', 'receiverId'),
+      sender: a.belongsTo('User', 'senderId'),
+      affirmations: a.hasMany('Affirmation', 'calendarId')
+    })
+    .authorization((allow) => allow.ownersDefinedIn('owners').to(['create', 'read'])),
   
-  // Affirmation: a
-  //   .model({
-  //     calendarId: a.id().required(),
-  //     day: a.integer().required(),
-  //     message: a.string().required().default(""),
-  //     calendar: a.belongsTo('Calendar', 'calendarId')
-  //   })
-  //   .identifier(['calendarId', 'day'])
-  //   .authorization((allow) => allow.publicApiKey())
+  Affirmation: a
+    .model({
+      calendarId: a.id().required(),
+      day: a.integer().required(),
+      message: a.string().required().default(""),
+      calendar: a.belongsTo('Calendar', 'calendarId'),
+      owners: a.string().array()
+    })
+    .identifier(['calendarId', 'day'])
+    .authorization((allow) => allow.ownersDefinedIn('owners').to(['create', 'read']))
   
 }).authorization(allow => [allow.resource(postConfirmation)]);
 
