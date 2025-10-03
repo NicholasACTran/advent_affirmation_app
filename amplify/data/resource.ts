@@ -8,6 +8,7 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
+  
   User: a
     .model({
       email: a.email().required(),
@@ -21,6 +22,7 @@ const schema = a.schema({
     .authorization((allow) => [
       allow.ownerDefinedIn("profileOwner")
     ]),
+    
   Calendar: a
     .model({
       senderEmail: a.email().required(),
@@ -33,14 +35,19 @@ const schema = a.schema({
       receiver: a.belongsTo('User', 'receiverEmail'),
       sender: a.belongsTo('User', 'senderEmail'),
       affirmations: a.hasMany('Affirmation', ['calendarId', 'day'])
-    }),
+    })
+    .authorization((allow) => allow.publicApiKey()),
+  
   Affirmation: a
     .model({
       calendarId: a.id().required(),
       day: a.integer().required(),
       message: a.string().required().default(""),
       calendar: a.belongsTo('Calendar', ['calendarId', 'day'])
-    }).identifier(['calendarId', 'day']),
+    })
+    .identifier(['calendarId', 'day'])
+    .authorization((allow) => allow.publicApiKey())
+  
 }).authorization(allow => [allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;
