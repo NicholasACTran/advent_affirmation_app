@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { postConfirmation } from "../auth/post-confirmation/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -7,12 +8,40 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  User: a
     .model({
-      content: a.string(),
+      email: a.email().required(),
+      firstName: a.string(),
+      lastName: a.string(),
+      receivedCalendars: a.hasMany('Calendar', 'receiverEmail'),
+      sentCalendars: a.hasMany('Calendar', 'senderEmail'),
+      profileOwner: a.string(),
     })
-    .authorization((allow) => [allow.publicApiKey()]),
-});
+    .identifier(['email'])
+    .authorization((allow) => [
+      allow.ownerDefinedIn("profileOwner")
+    ]),
+  Calendar: a
+    .model({
+      senderEmail: a.email().required(),
+      receiverEmail: a.email().required(),
+      title: a.string(),
+      message: a.string(),
+      numOfAffirmations: a.integer().required(),
+      currentAffirmation: a.integer().required(),
+      lastOpened: a.datetime().required(),
+      receiver: a.belongsTo('User', 'receiverEmail'),
+      sender: a.belongsTo('User', 'senderEmail'),
+      affirmations: a.hasMany('Affirmation', ['calendarId', 'day'])
+    }),
+  Affirmation: a
+    .model({
+      calendarId: a.id().required(),
+      day: a.integer().required(),
+      message: a.string().required().default(""),
+      calendar: a.belongsTo('Calendar', ['calendarId', 'day'])
+    }).identifier(['calendarId', 'day']),
+}).authorization(allow => [allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;
 
