@@ -24,7 +24,7 @@
     </div>
   </template>
   
-  <script>
+  <script setup lang="ts">
   export default {
     name: 'Grid',
     props: {
