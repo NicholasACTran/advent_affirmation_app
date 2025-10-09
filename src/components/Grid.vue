@@ -1,30 +1,6 @@
-<template>
-    <div class="square-grid-container">
-      <div class="pagination">
-        <button
-          v-for="page in totalPages"
-          :key="page"
-          class="page-button"
-          :class="{ active: page === currentPage }"
-          @click="goToPage(page)"
-        >
-          {{ page }}
-        </button>
-      </div>
-      <div class="square-grid">
-        <div
-          v-for="square in paginatedSquares"
-          :key="square"
-          class="square"
-          @click="handleClick(square)"
-        >
-          {{ square }}
-        </div>
-      </div>
-    </div>
-  </template>
-  
-  <script setup lang="ts">
+<script lang="ts">
+import "@/assets/grid.css"
+
   export default {
     name: 'Grid',
     props: {
@@ -64,7 +40,33 @@
       }
     }
   };
-  </script>
+</script>
+
+<template>
+    <div class="square-grid-container">
+      <div class="pagination">
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          class="page-button"
+          :class="{ active: page === currentPage }"
+          @click="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+      <div class="square-grid">
+        <div
+          v-for="square in paginatedSquares"
+          :key="square"
+          class="square"
+          @click="handleClick(square)"
+        >
+          {{ square }}
+        </div>
+      </div>
+    </div>
+</template>
   
-  <style src="@/assets/grid.css"></style>
+  <!-- <style src="@/assets/grid.css"></style> -->
   

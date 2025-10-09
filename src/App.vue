@@ -9,13 +9,14 @@ import Grid from './components/Grid.vue'
 <template>
   <main>
     <!-- <Todos /> -->
+    <Grid :count="60" />
         
-    <authenticator>
+    <!-- <authenticator>
       <template v-slot="{ signOut }">
-        <Grid :count="60" />
-        <!-- <button @click="signOut">Sign Out</button> -->
-      </template>
-    </authenticator>
+        
+        <button @click="signOut">Sign Out</button>
+      </template> -->
+    <!-- </authenticator> -->
   </main>
 </template>
 
