@@ -10,7 +10,7 @@
   ],
   "include": [
     "amplify/data/resource.ts",
-    "amplify/auth/post-confirmation/resource.ts"
+    "amplify/functions/post-confirmation/resource.ts"
   ],
   "compilerOptions": {
     "target": "ES2022",
