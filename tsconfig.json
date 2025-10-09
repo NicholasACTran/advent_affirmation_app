@@ -11,5 +11,14 @@
   "include": [
     "amplify/data/resource.ts",
     "amplify/auth/post-confirmation/resource.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
 }
