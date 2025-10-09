@@ -8,10 +8,10 @@
       "path": "./tsconfig.app.json"
     }
   ],
-  // "include": [
-  //   "amplify/data/resource.ts",
-  //   "amplify/auth/post-confirmation/resource.ts"
-  // ],
+  "include": [
+    "amplify/data/resource.ts",
+    "amplify/auth/post-confirmation/resource.ts"
+  ],
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
