@@ -6,7 +6,8 @@
     "src/**/*.vue", 
     "amplify/**/*",
     "amplify/data/resource.ts",
-    "amplify/functions/post-confirmation/resource.ts"
+    "amplify/functions/post-confirmation/resource.ts",
+    ".amplify/generated/**/*"
   ],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
