@@ -75,3 +75,31 @@
   .page-button:active {
     transform: translateY(0);
   }
+
+  .loading, .error {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .error {
+    color: #dc2626;
+  }
+  
+  .actions {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
+  .back-button {
+    padding: 0.75rem 1.5rem;
+    background: #64748b;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  
+  .back-button:hover {
+    background: #475569;
+  }
