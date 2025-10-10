@@ -31,11 +31,11 @@ import "@/assets/grid.css"
       }
     },
     methods: {
-      handleClick(squareNumber : Number) {
+      handleClick(squareNumber : number) {
         this.$emit('square-clicked', squareNumber);
         console.log(`Square ${squareNumber} clicked`);
       },
-      goToPage(pageNumber : Number) {
+      goToPage(pageNumber : number) {
         this.currentPage = pageNumber;
       }
     }
