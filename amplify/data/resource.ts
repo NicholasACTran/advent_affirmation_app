@@ -37,7 +37,9 @@ const schema = a.schema({
       sender: a.belongsTo('User', 'senderId'),
       affirmations: a.hasMany('Affirmation', 'calendarId')
     })
-    .authorization((allow) => allow.ownersDefinedIn('owners').to(['create', 'read'])),
+    .authorization((allow) => [
+      allow.ownersDefinedIn('owners').to(['create', 'read'])
+    ]),
   
   Affirmation: a
     .model({
@@ -57,7 +59,7 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
+    defaultAuthorizationMode: "userPool",
     // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
