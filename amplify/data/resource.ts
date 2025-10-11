@@ -48,8 +48,12 @@ const schema = a.schema({
       message: a.string().required().default(""),
       calendar: a.belongsTo('Calendar', 'calendarId'),
       owners: a.string().array(),
-      opened: a.datetime().array().default([]),
-      type: a.string()
+      opened: a.datetime().array(),
+      type: a.enum([
+        "TEXT",
+        "ROMANCE",
+        "NSFW"
+      ])
     })
     .identifier(['calendarId', 'day'])
     .authorization((allow) => allow.ownersDefinedIn('owners').to(['create', 'read', 'update']))
