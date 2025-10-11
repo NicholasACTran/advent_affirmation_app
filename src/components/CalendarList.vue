@@ -121,9 +121,9 @@ watch(
             </p>
 
             <p class="last-opened">
-              <span class="label">Last opened:</span>
+              <span class="label">Start Date:</span>
 
-              <span class="value">{{ formatDate(calendar.lastOpened) }}</span>
+              <span class="value">{{ formatDate(calendar.startDate) }}</span>
             </p>
           </div>
         </div>

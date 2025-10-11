@@ -50,7 +50,7 @@ const schema = a.schema({
       owners: a.string().array(),
       opened: a.datetime().array(),
       type: a.enum([
-        "TEXT",
+        "PLATONIC",
         "ROMANCE",
         "NSFW"
       ])
