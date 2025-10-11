@@ -9,6 +9,7 @@ const client = generateClient<Schema>();
 interface Props {
   calendarId: string;
   count: number;
+  startDate: string; // AWSDate format: "YYYY-MM-DD"
 }
 
 const props = defineProps<Props>();
@@ -31,6 +32,26 @@ const selectedAffirmation = ref<string>('');
 const selectedDay = ref<number>(0);
 const updatingAffirmation = ref(false);
 
+// Calculate days since start date
+const daysSinceStartDate = computed(() => {
+  const start = new Date(props.startDate);
+  const today = new Date();
+  
+  // Reset time to midnight for accurate day counting
+  start.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  
+  const diffTime = today.getTime() - start.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  return diffDays;
+});
+
+// Maximum day that can be opened
+const maxAvailableDay = computed(() => {
+  return daysSinceStartDate.value + 1;
+});
+
 // Computed properties
 const totalPages = computed(() => {
   return Math.ceil(props.count / squaresPerPage);
@@ -48,6 +69,38 @@ const paginatedSquares = computed(() => {
   return squares;
 });
 
+// Check if a square/day is available to open
+const isDayAvailable = (day: number) => {
+  return day <= maxAvailableDay.value;
+};
+
+// Get affirmation for a specific day
+const getAffirmation = (day: number) => {
+  return affirmations.value.find(a => a.day === day);
+};
+
+// Get the color class for a square based on affirmation type and opened status
+const getSquareColorClass = (day: number) => {
+  const affirmation = getAffirmation(day);
+  
+  if (!affirmation) {
+    return 'square-default';
+  }
+  
+  const type = affirmation.type?.toUpperCase();
+  const isOpened = affirmation.opened && affirmation.opened.length > 0;
+  
+  if (type === 'PLATONIC') {
+    return isOpened ? 'square-platonic-opened' : 'square-platonic-unopened';
+  } else if (type === 'ROMANTIC') {
+    return 'square-romantic';
+  } else if (type === 'NSFW') {
+    return 'square-nsfw';
+  }
+  
+  return 'square-default';
+};
+
 // Fetch affirmations from Amplify
 const fetchAffirmations = async () => {
   loading.value = true;
@@ -59,8 +112,11 @@ const fetchAffirmations = async () => {
       filter: {
         calendarId: {
           eq: props.calendarId
+        },
+        day: {
+          le: maxAvailableDay.value
         }
-      }
+      },
     });
     
     if (errors) {
@@ -69,6 +125,8 @@ const fetchAffirmations = async () => {
     } else {
       affirmations.value = data;
       console.log('Loaded affirmations:', data);
+      console.log('Days since start date:', daysSinceStartDate.value);
+      console.log('Max available day:', maxAvailableDay.value);
     }
   } catch (e) {
     error.value = 'Failed to load affirmations';
@@ -116,6 +174,12 @@ const updateAffirmationOpened = async (affirmation: Schema['Affirmation']['type'
 
 // Methods
 const handleClick = async (squareNumber: number) => {
+  // Check if the day is available to open
+  if (!isDayAvailable(squareNumber)) {
+    alert(`Day ${squareNumber} is not available yet. Come back on ${getAvailableDate(squareNumber)}!`);
+    return;
+  }
+  
   emit('squareClicked', squareNumber);
   
   // Find the affirmation for this day
@@ -134,6 +198,17 @@ const handleClick = async (squareNumber: number) => {
   }
 };
 
+// Get the date when a specific day will be available
+const getAvailableDate = (day: number) => {
+  const start = new Date(props.startDate);
+  start.setDate(start.getDate() + day - 1);
+  return start.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+};
+
 const closeModal = () => {
   showModal.value = false;
   selectedAffirmation.value = '';
@@ -149,14 +224,21 @@ onMounted(() => {
   fetchAffirmations();
 });
 
-// Re-fetch if calendarId changes
-watch(() => props.calendarId, () => {
+// Re-fetch if calendarId or startDate changes
+watch([() => props.calendarId, () => props.startDate], () => {
   fetchAffirmations();
 });
 </script>
 
 <template>
   <div class="square-grid-container">
+    <!-- Close button at top-left -->
+    <header class="grid-header">
+      <button @click="emit('close')" class="close-button">
+        ← Back to Calendars
+      </button>
+    </header>
+
     <!-- Loading state -->
     <div v-if="loading" class="loading">
       <p>Loading affirmations...</p>
@@ -187,17 +269,18 @@ watch(() => props.calendarId, () => {
           v-for="square in paginatedSquares" 
           :key="square" 
           class="square" 
+          :class="[
+            getSquareColorClass(square),
+            { 
+              'square-locked': !isDayAvailable(square),
+              'square-available': isDayAvailable(square)
+            }
+          ]"
           @click="handleClick(square)"
         >
           {{ square }}
+          <span v-if="!isDayAvailable(square)" class="lock-icon">🔒</span>
         </div>
-      </div>
-      
-      <!-- Back button to return to calendar list -->
-      <div class="actions">
-        <button @click="emit('close')" class="back-button">
-          Back to Calendars
-        </button>
       </div>
     </template>
     

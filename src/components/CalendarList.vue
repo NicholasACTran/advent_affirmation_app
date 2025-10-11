@@ -14,25 +14,16 @@ const props = defineProps<Props>();
 
 // Define emit for opening calendar
 const emit = defineEmits<{
-  openCalendar: [payload: { calendarId: string; count: number }];
+  openCalendar: [payload: { calendarId: string; count: number, startDate: string }];
 }>();
 
 const calendars = ref<Schema["Calendar"]["type"][]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
 // Handler for opening a calendar
-const openCalendar = (calendarId: string, count: number) => {
-  emit("openCalendar", { calendarId, count });
+const openCalendar = (calendarId: string, count: number, startDate: string) => {
+  emit("openCalendar", { calendarId, count, startDate });
 };
 
 const fetchCalendars = async () => {
@@ -56,6 +47,7 @@ const fetchCalendars = async () => {
       error.value = "Failed to load calendars";
     } else {
       calendars.value = data;
+      console.log(data);
     }
   } catch (e) {
     error.value = "Failed to load calendars";
@@ -112,24 +104,10 @@ watch(
           <p class="calendar-message" v-if="calendar.message">
             {{ calendar.message }}
           </p>
-
-          <div class="calendar-meta">
-            <p class="calendar-sender">
-              <span class="label">From:</span>
-
-              <span class="value">Sender ID: {{ calendar.senderId }}</span>
-            </p>
-
-            <p class="last-opened">
-              <span class="label">Start Date:</span>
-
-              <span class="value">{{ formatDate(calendar.startDate) }}</span>
-            </p>
-          </div>
         </div>
 
         <div class="card-footer">
-          <button class="open-btn" @click="openCalendar(calendar.id, calendar.numOfAffirmations)">
+          <button class="open-btn" @click="openCalendar(calendar.id, calendar.numOfAffirmations, calendar.startDate)">
             Open Calendar
           </button>
         </div>

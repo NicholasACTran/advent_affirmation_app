@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 4rem;
+    min-height: 100vh;
   }
 
 .square-grid {
@@ -25,7 +27,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
     font-weight: bold;
     font-size: 1.2rem;
   }
@@ -257,6 +258,106 @@
 
 .back-button:hover {
   background: #475569;
+}
+
+/* Grid header with close button */
+.grid-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 1rem;
+  z-index: 99;
+}
+
+.close-button {
+  padding: 0.5rem 1rem;
+  background-color: #64748b;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.close-button:hover {
+  background-color: #475569;
+}
+
+.close-button:active {
+  transform: scale(0.98);
+}
+
+.actions {
+  display: none;
+}
+
+/* Color classes for different affirmation types */
+
+/* PLATONIC - Blue when unopened */
+.square-platonic-unopened {
+  background-color: #3b82f6 !important;
+  color: white;
+}
+
+.square-platonic-unopened:hover {
+  background-color: #2563eb !important;
+}
+
+/* PLATONIC - Green when opened */
+.square-platonic-opened {
+  background-color: #10b981 !important;
+  color: white;
+}
+
+.square-platonic-opened:hover {
+  background-color: #059669 !important;
+}
+
+/* ROMANTIC - Always red */
+.square-romantic {
+  background-color: #ef4444 !important;
+  color: white;
+}
+
+.square-romantic:hover {
+  background-color: #dc2626 !important;
+}
+
+/* NSFW - Always purple */
+.square-nsfw {
+  background-color: #a855f7 !important;
+  color: white;
+}
+
+.square-nsfw:hover {
+  background-color: #9333ea !important;
+}
+
+/* Default color for squares without type */
+.square-default {
+  background-color: #3b82f6 !important;
+  color: white;
+}
+
+.square-default:hover {
+  background-color: #2563eb
+}
+
+/* Locked squares override - should be grayed out regardless of type */
+.square-locked {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(80%);
+}
+
+.square-locked:hover {
+  transform: none !important;
 }
 
 /* Responsive adjustments */

@@ -117,20 +117,6 @@
     margin: 0 0 1rem 0;
   }
   
-  .calendar-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .calendar-sender,
-  .last-opened {
-    margin: 0;
-    font-size: 0.9rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-  
   .label {
     color: #64748b;
     font-weight: 500;
