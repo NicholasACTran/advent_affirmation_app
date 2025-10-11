@@ -32,7 +32,7 @@ const schema = a.schema({
       message: a.string(),
       numOfAffirmations: a.integer().required(),
       currentAffirmation: a.integer().required(),
-      lastOpened: a.datetime().required(),
+      startDate: a.date().required(),
       receiver: a.belongsTo('User', 'receiverId'),
       sender: a.belongsTo('User', 'senderId'),
       affirmations: a.hasMany('Affirmation', 'calendarId')
@@ -47,10 +47,12 @@ const schema = a.schema({
       day: a.integer().required(),
       message: a.string().required().default(""),
       calendar: a.belongsTo('Calendar', 'calendarId'),
-      owners: a.string().array()
+      owners: a.string().array(),
+      opened: a.datetime().array().default([]),
+      type: a.string()
     })
     .identifier(['calendarId', 'day'])
-    .authorization((allow) => allow.ownersDefinedIn('owners').to(['create', 'read']))
+    .authorization((allow) => allow.ownersDefinedIn('owners').to(['create', 'read', 'update']))
   
 }).authorization(allow => [allow.resource(postConfirmation)]);
 

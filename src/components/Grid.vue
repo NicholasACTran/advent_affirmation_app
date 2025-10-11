@@ -25,6 +25,12 @@ const affirmations = ref<Schema['Affirmation']['type'][]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 
+// Modal state
+const showModal = ref(false);
+const selectedAffirmation = ref<string>('');
+const selectedDay = ref<number>(0);
+const updatingAffirmation = ref(false);
+
 // Computed properties
 const totalPages = computed(() => {
   return Math.ceil(props.count / squaresPerPage);
@@ -72,16 +78,66 @@ const fetchAffirmations = async () => {
   }
 };
 
+// Update affirmation's opened array
+const updateAffirmationOpened = async (affirmation: Schema['Affirmation']['type']) => {
+  updatingAffirmation.value = true;
+  
+  try {
+    const currentDateTime = new Date().toISOString();
+    const updatedOpenedArray = [...(affirmation.opened || []), currentDateTime];
+    
+    const { data, errors } = await client.models.Affirmation.update({
+      calendarId: affirmation.calendarId,
+      day: affirmation.day,
+      opened: updatedOpenedArray
+    }, {
+      authMode: 'userPool'
+    });
+    
+    if (errors) {
+      console.error('Error updating affirmation:', errors);
+    } else {
+      console.log('Successfully updated affirmation opened time');
+      
+      // Update local state
+      const index = affirmations.value.findIndex(
+        a => a.calendarId === affirmation.calendarId && a.day === affirmation.day
+      );
+      if (index !== -1 && data) {
+        affirmations.value[index] = data;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to update affirmation:', e);
+  } finally {
+    updatingAffirmation.value = false;
+  }
+};
+
 // Methods
-const handleClick = (squareNumber: number) => {
+const handleClick = async (squareNumber: number) => {
   emit('squareClicked', squareNumber);
-  console.log(`Square ${squareNumber} clicked`);
   
   // Find the affirmation for this day
   const affirmation = affirmations.value.find(a => a.day === squareNumber);
-  if (affirmation) {
-    console.log('Affirmation:', affirmation.message);
+  if (affirmation && affirmation.message) {
+    selectedAffirmation.value = affirmation.message;
+    selectedDay.value = squareNumber;
+    showModal.value = true;
+    
+    // Update the opened array in the background
+    await updateAffirmationOpened(affirmation);
+  } else {
+    selectedAffirmation.value = 'No affirmation available for this day.';
+    selectedDay.value = squareNumber;
+    showModal.value = true;
   }
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  selectedAffirmation.value = '';
+  selectedDay.value = 0;
 };
 
 const goToPage = (pageNumber: number) => {
@@ -144,5 +200,25 @@ watch(() => props.calendarId, () => {
         </button>
       </div>
     </template>
+    
+    <!-- Affirmation Modal -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showModal" class="modal-overlay" @click="closeModal">
+          <div class="modal-container" @click.stop>
+            <div class="modal-header">
+              <h2>Day {{ selectedDay }}</h2>
+              <button class="modal-close" @click="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <p class="affirmation-text">{{ selectedAffirmation }}</p>
+            </div>
+            <div class="modal-footer">
+              <button class="modal-button" @click="closeModal">Close</button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
