@@ -294,7 +294,8 @@ watch([() => props.calendarId, () => props.startDate], () => {
               <button class="modal-close" @click="closeModal">&times;</button>
             </div>
             <div class="modal-body">
-              <p class="affirmation-text">{{ selectedAffirmation }}</p>
+              <!-- <p class="affirmation-text">{{ selectedAffirmation }}</p> -->
+              <div class="affirmation-text" v-html="selectedAffirmation"></div>
             </div>
             <div class="modal-footer">
               <button class="modal-button" @click="closeModal">Close</button>
