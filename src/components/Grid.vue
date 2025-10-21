@@ -92,7 +92,7 @@ const getSquareColorClass = (day: number) => {
   
   if (type === 'PLATONIC') {
     return isOpened ? 'square-platonic-opened' : 'square-platonic-unopened';
-  } else if (type === 'ROMANTIC') {
+  } else if (type === 'ROMANCE') {
     return 'square-romantic';
   } else if (type === 'NSFW') {
     return 'square-nsfw';
