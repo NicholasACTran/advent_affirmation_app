@@ -46,13 +46,19 @@ const schema = a.schema({
       calendarId: a.id().required(),
       day: a.integer().required(),
       message: a.string().required().default(""),
+      platonicMessage: a.string().default(""),
+      romanceMessage: a.string().default(""),
+      nsfwMessage: a.string().default(""),
       calendar: a.belongsTo('Calendar', 'calendarId'),
       owners: a.string().array(),
       opened: a.datetime().array(),
       type: a.enum([
         "PLATONIC",
         "ROMANCE",
-        "NSFW"
+        "NSFW",
+        "PLATONIC/ROMANCE",
+        "ROMANCE/NSFW",
+        "PLATONIC/ROMANCE/NSFW"
       ])
     })
     .identifier(['calendarId', 'day'])

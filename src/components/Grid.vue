@@ -31,6 +31,8 @@ const showModal = ref(false);
 const selectedAffirmation = ref<string>('');
 const selectedDay = ref<number>(0);
 const updatingAffirmation = ref(false);
+const showAdditionalMessages = ref(false);
+const currentAffirmation = ref<Schema['Affirmation']['type'] | null>(null);
 
 // Calculate days since start date
 const daysSinceStartDate = computed(() => {
@@ -50,6 +52,19 @@ const daysSinceStartDate = computed(() => {
 // Maximum day that can be opened
 const maxAvailableDay = computed(() => {
   return daysSinceStartDate.value + 1;
+});
+
+// Computed message that updates when checkbox state changes
+const displayedMessage = computed(() => {
+  if (!currentAffirmation.value) return '';
+  return constructMessage(currentAffirmation.value, showAdditionalMessages.value);
+});
+
+// Check if the current affirmation is a combined type
+const isCombinedType = computed(() => {
+  if (!currentAffirmation.value) return false;
+  const type = currentAffirmation.value.type?.toUpperCase();
+  return type === 'PLATONIC/ROMANCE' || type === 'ROMANCE/NSFW' || type === 'PLATONIC/ROMANCE/NSFW';
 });
 
 // Computed properties
@@ -82,22 +97,28 @@ const getAffirmation = (day: number) => {
 // Get the color class for a square based on affirmation type and opened status
 const getSquareColorClass = (day: number) => {
   const affirmation = getAffirmation(day);
-  
+
   if (!affirmation) {
     return 'square-default';
   }
-  
+
   const type = affirmation.type?.toUpperCase();
   const isOpened = affirmation.opened && affirmation.opened.length > 0;
-  
+
   if (type === 'PLATONIC') {
     return isOpened ? 'square-platonic-opened' : 'square-platonic-unopened';
   } else if (type === 'ROMANCE') {
     return 'square-romantic';
   } else if (type === 'NSFW') {
     return 'square-nsfw';
+  } else if (type === 'PLATONIC/ROMANCE') {
+    return 'square-platonic-romance';
+  } else if (type === 'ROMANCE/NSFW') {
+    return 'square-romance-nsfw';
+  } else if (type === 'PLATONIC/ROMANCE/NSFW') {
+    return 'square-platonic-romance-nsfw';
   }
-  
+
   return 'square-default';
 };
 
@@ -172,6 +193,40 @@ const updateAffirmationOpened = async (affirmation: Schema['Affirmation']['type'
   }
 };
 
+// Helper function to construct message based on type
+const constructMessage = (affirmation: Schema['Affirmation']['type'], showAll: boolean = false) => {
+  const type = affirmation.type?.toUpperCase();
+
+  if (type === 'PLATONIC/ROMANCE') {
+    const messages = [];
+    // Always show platonic message first (initial/low-level)
+    if (affirmation.platonicMessage) messages.push(affirmation.platonicMessage);
+    // Show romance message only if showAll is true
+    if (showAll && affirmation.romanceMessage) messages.push(affirmation.romanceMessage);
+    return messages.join('<br><br>');
+  } else if (type === 'ROMANCE/NSFW') {
+    const messages = [];
+    // Always show romance message first (initial/low-level)
+    if (affirmation.romanceMessage) messages.push(affirmation.romanceMessage);
+    // Show nsfw message only if showAll is true
+    if (showAll && affirmation.nsfwMessage) messages.push(affirmation.nsfwMessage);
+    return messages.join('<br><br>');
+  } else if (type === 'PLATONIC/ROMANCE/NSFW') {
+    const messages = [];
+    // Always show platonic message first (initial/low-level)
+    if (affirmation.platonicMessage) messages.push(affirmation.platonicMessage);
+    // Show romance and nsfw messages only if showAll is true
+    if (showAll) {
+      if (affirmation.romanceMessage) messages.push(affirmation.romanceMessage);
+      if (affirmation.nsfwMessage) messages.push(affirmation.nsfwMessage);
+    }
+    return messages.join('<br><br>');
+  }
+
+  // Default to the regular message field for single types
+  return affirmation.message || '';
+};
+
 // Methods
 const handleClick = async (squareNumber: number) => {
   // Check if the day is available to open
@@ -179,20 +234,31 @@ const handleClick = async (squareNumber: number) => {
     alert(`Day ${squareNumber} is not available yet. Come back on ${getAvailableDate(squareNumber)}!`);
     return;
   }
-  
+
   emit('squareClicked', squareNumber);
-  
+
   // Find the affirmation for this day
   const affirmation = affirmations.value.find(a => a.day === squareNumber);
-  if (affirmation && affirmation.message) {
-    selectedAffirmation.value = affirmation.message;
-    selectedDay.value = squareNumber;
-    showModal.value = true;
-    
-    // Update the opened array in the background
-    await updateAffirmationOpened(affirmation);
+  if (affirmation) {
+    const message = constructMessage(affirmation, false);
+    if (message) {
+      // Reset checkbox state and store current affirmation
+      showAdditionalMessages.value = false;
+      currentAffirmation.value = affirmation;
+      selectedDay.value = squareNumber;
+      showModal.value = true;
+
+      // Update the opened array in the background
+      await updateAffirmationOpened(affirmation);
+    } else {
+      selectedAffirmation.value = 'No affirmation available for this day.';
+      currentAffirmation.value = null;
+      selectedDay.value = squareNumber;
+      showModal.value = true;
+    }
   } else {
     selectedAffirmation.value = 'No affirmation available for this day.';
+    currentAffirmation.value = null;
     selectedDay.value = squareNumber;
     showModal.value = true;
   }
@@ -213,6 +279,8 @@ const closeModal = () => {
   showModal.value = false;
   selectedAffirmation.value = '';
   selectedDay.value = 0;
+  showAdditionalMessages.value = false;
+  currentAffirmation.value = null;
 };
 
 const goToPage = (pageNumber: number) => {
@@ -294,8 +362,20 @@ watch([() => props.calendarId, () => props.startDate], () => {
               <button class="modal-close" @click="closeModal">&times;</button>
             </div>
             <div class="modal-body">
-              <!-- <p class="affirmation-text">{{ selectedAffirmation }}</p> -->
-              <div class="affirmation-text" v-html="selectedAffirmation"></div>
+              <!-- Show computed message for combined types, otherwise show regular message -->
+              <div class="affirmation-text" v-html="currentAffirmation ? displayedMessage : selectedAffirmation"></div>
+
+              <!-- Checkbox for combined types to reveal additional messages -->
+              <div v-if="isCombinedType" class="additional-messages-control">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    v-model="showAdditionalMessages"
+                    class="checkbox-input"
+                  />
+                  <span class="checkbox-text">Show additional messages</span>
+                </label>
+              </div>
             </div>
             <div class="modal-footer">
               <button class="modal-button" @click="closeModal">Close</button>

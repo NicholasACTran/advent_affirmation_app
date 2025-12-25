@@ -205,6 +205,33 @@
   text-decoration: underline;
 }
 
+.additional-messages-control {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.checkbox-text {
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 500;
+}
+
 .modal-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid #e5e7eb;
@@ -369,6 +396,36 @@
 
 .square-default:hover {
   background-color: #2563eb
+}
+
+/* PLATONIC/ROMANCE - Split blue and red */
+.square-platonic-romance {
+  background: linear-gradient(135deg, #3b82f6 0%, #3b82f6 50%, #ef4444 50%, #ef4444 100%) !important;
+  color: white;
+}
+
+.square-platonic-romance:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #2563eb 50%, #dc2626 50%, #dc2626 100%) !important;
+}
+
+/* ROMANCE/NSFW - Split red and purple */
+.square-romance-nsfw {
+  background: linear-gradient(135deg, #ef4444 0%, #ef4444 50%, #a855f7 50%, #a855f7 100%) !important;
+  color: white;
+}
+
+.square-romance-nsfw:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #dc2626 50%, #9333ea 50%, #9333ea 100%) !important;
+}
+
+/* PLATONIC/ROMANCE/NSFW - Split blue, red, and purple */
+.square-platonic-romance-nsfw {
+  background: linear-gradient(135deg, #3b82f6 0%, #3b82f6 33.33%, #ef4444 33.33%, #ef4444 66.66%, #a855f7 66.66%, #a855f7 100%) !important;
+  color: white;
+}
+
+.square-platonic-romance-nsfw:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #2563eb 33.33%, #dc2626 33.33%, #dc2626 66.66%, #9333ea 66.66%, #9333ea 100%) !important;
 }
 
 /* Locked squares override - should be grayed out regardless of type */
