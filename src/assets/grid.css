@@ -398,7 +398,7 @@
   background-color: #2563eb
 }
 
-/* PLATONIC/ROMANCE - Split blue and red */
+/* PLATONIC-ROMANCE - Split blue and red */
 .square-platonic-romance {
   background: linear-gradient(135deg, #3b82f6 0%, #3b82f6 50%, #ef4444 50%, #ef4444 100%) !important;
   color: white;
@@ -408,7 +408,7 @@
   background: linear-gradient(135deg, #2563eb 0%, #2563eb 50%, #dc2626 50%, #dc2626 100%) !important;
 }
 
-/* ROMANCE/NSFW - Split red and purple */
+/* ROMANCE-NSFW - Split red and purple */
 .square-romance-nsfw {
   background: linear-gradient(135deg, #ef4444 0%, #ef4444 50%, #a855f7 50%, #a855f7 100%) !important;
   color: white;
@@ -418,7 +418,7 @@
   background: linear-gradient(135deg, #dc2626 0%, #dc2626 50%, #9333ea 50%, #9333ea 100%) !important;
 }
 
-/* PLATONIC/ROMANCE/NSFW - Split blue, red, and purple */
+/* PLATONIC-ROMANCE-NSFW - Split blue, red, and purple */
 .square-platonic-romance-nsfw {
   background: linear-gradient(135deg, #3b82f6 0%, #3b82f6 33.33%, #ef4444 33.33%, #ef4444 66.66%, #a855f7 66.66%, #a855f7 100%) !important;
   color: white;

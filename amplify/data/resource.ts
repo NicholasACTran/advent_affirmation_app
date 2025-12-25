@@ -56,9 +56,9 @@ const schema = a.schema({
         "PLATONIC",
         "ROMANCE",
         "NSFW",
-        "PLATONIC/ROMANCE",
-        "ROMANCE/NSFW",
-        "PLATONIC/ROMANCE/NSFW"
+        "PLATONIC-ROMANCE",
+        "ROMANCE-NSFW",
+        "PLATONIC-ROMANCE-NSFW"
       ])
     })
     .identifier(['calendarId', 'day'])

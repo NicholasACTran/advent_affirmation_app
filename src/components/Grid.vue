@@ -64,7 +64,7 @@ const displayedMessage = computed(() => {
 const isCombinedType = computed(() => {
   if (!currentAffirmation.value) return false;
   const type = currentAffirmation.value.type?.toUpperCase();
-  return type === 'PLATONIC/ROMANCE' || type === 'ROMANCE/NSFW' || type === 'PLATONIC/ROMANCE/NSFW';
+  return type === 'PLATONIC-ROMANCE' || type === 'ROMANCE-NSFW' || type === 'PLATONIC-ROMANCE-NSFW';
 });
 
 // Computed properties
@@ -111,11 +111,11 @@ const getSquareColorClass = (day: number) => {
     return 'square-romantic';
   } else if (type === 'NSFW') {
     return 'square-nsfw';
-  } else if (type === 'PLATONIC/ROMANCE') {
+  } else if (type === 'PLATONIC-ROMANCE') {
     return 'square-platonic-romance';
-  } else if (type === 'ROMANCE/NSFW') {
+  } else if (type === 'ROMANCE-NSFW') {
     return 'square-romance-nsfw';
-  } else if (type === 'PLATONIC/ROMANCE/NSFW') {
+  } else if (type === 'PLATONIC-ROMANCE-NSFW') {
     return 'square-platonic-romance-nsfw';
   }
 
@@ -197,21 +197,21 @@ const updateAffirmationOpened = async (affirmation: Schema['Affirmation']['type'
 const constructMessage = (affirmation: Schema['Affirmation']['type'], showAll: boolean = false) => {
   const type = affirmation.type?.toUpperCase();
 
-  if (type === 'PLATONIC/ROMANCE') {
+  if (type === 'PLATONIC-ROMANCE') {
     const messages = [];
     // Always show platonic message first (initial/low-level)
     if (affirmation.platonicMessage) messages.push(affirmation.platonicMessage);
     // Show romance message only if showAll is true
     if (showAll && affirmation.romanceMessage) messages.push(affirmation.romanceMessage);
     return messages.join('<br><br>');
-  } else if (type === 'ROMANCE/NSFW') {
+  } else if (type === 'ROMANCE-NSFW') {
     const messages = [];
     // Always show romance message first (initial/low-level)
     if (affirmation.romanceMessage) messages.push(affirmation.romanceMessage);
     // Show nsfw message only if showAll is true
     if (showAll && affirmation.nsfwMessage) messages.push(affirmation.nsfwMessage);
     return messages.join('<br><br>');
-  } else if (type === 'PLATONIC/ROMANCE/NSFW') {
+  } else if (type === 'PLATONIC-ROMANCE-NSFW') {
     const messages = [];
     // Always show platonic message first (initial/low-level)
     if (affirmation.platonicMessage) messages.push(affirmation.platonicMessage);
