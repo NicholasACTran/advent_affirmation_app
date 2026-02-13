@@ -133,7 +133,7 @@ const fetchAffirmations = async () => {
 
     // Keep fetching until there are no more pages
     do {
-      const { data, errors, nextToken: newNextToken } = await client.models.Affirmation.list({
+      const response = await client.models.Affirmation.list({
         authMode: 'userPool',
         filter: {
           calendarId: {
@@ -146,13 +146,13 @@ const fetchAffirmations = async () => {
         nextToken: nextToken
       });
 
-      if (errors) {
-        console.error('Errors fetching affirmations:', errors);
+      if (response.errors) {
+        console.error('Errors fetching affirmations:', response.errors);
         error.value = 'Failed to load affirmations';
         break;
       } else {
-        allAffirmations = [...allAffirmations, ...data];
-        nextToken = newNextToken;
+        allAffirmations = [...allAffirmations, ...response.data];
+        nextToken = response.nextToken;
       }
     } while (nextToken);
 
