@@ -129,7 +129,7 @@ const fetchAffirmations = async () => {
 
   try {
     let allAffirmations: Schema['Affirmation']['type'][] = [];
-    let nextToken: string | null | undefined = undefined;
+    let paginationToken: string | null | undefined = undefined;
 
     // Keep fetching until there are no more pages
     do {
@@ -143,7 +143,7 @@ const fetchAffirmations = async () => {
             le: maxAvailableDay.value
           }
         },
-        nextToken: nextToken as string | undefined
+        nextToken: paginationToken as string | undefined
       });
 
       if (response.errors) {
@@ -152,9 +152,9 @@ const fetchAffirmations = async () => {
         break;
       } else {
         allAffirmations = [...allAffirmations, ...response.data];
-        nextToken = response.nextToken ?? undefined;
+        paginationToken = response.nextToken ?? undefined;
       }
-    } while (nextToken);
+    } while (paginationToken);
 
     affirmations.value = allAffirmations;
     console.log('Loaded affirmations:', allAffirmations.length);
