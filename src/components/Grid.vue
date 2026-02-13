@@ -133,7 +133,7 @@ const fetchAffirmations = async () => {
 
     // Keep fetching until there are no more pages
     do {
-      const response = await client.models.Affirmation.list({
+      const response: Awaited<ReturnType<typeof client.models.Affirmation.list>> = await client.models.Affirmation.list({
         authMode: 'userPool',
         filter: {
           calendarId: {
