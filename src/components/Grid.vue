@@ -143,7 +143,7 @@ const fetchAffirmations = async () => {
             le: maxAvailableDay.value
           }
         },
-        nextToken: nextToken
+        nextToken: nextToken as string | undefined
       });
 
       if (response.errors) {
@@ -152,7 +152,7 @@ const fetchAffirmations = async () => {
         break;
       } else {
         allAffirmations = [...allAffirmations, ...response.data];
-        nextToken = response.nextToken;
+        nextToken = response.nextToken ?? undefined;
       }
     } while (nextToken);
 
