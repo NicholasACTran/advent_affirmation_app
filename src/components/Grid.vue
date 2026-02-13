@@ -126,29 +126,40 @@ const getSquareColorClass = (day: number) => {
 const fetchAffirmations = async () => {
   loading.value = true;
   error.value = null;
-  
+
   try {
-    const { data, errors } = await client.models.Affirmation.list({
-      authMode: 'userPool',
-      filter: {
-        calendarId: {
-          eq: props.calendarId
+    let allAffirmations: Schema['Affirmation']['type'][] = [];
+    let nextToken: string | null | undefined = undefined;
+
+    // Keep fetching until there are no more pages
+    do {
+      const { data, errors, nextToken: newNextToken } = await client.models.Affirmation.list({
+        authMode: 'userPool',
+        filter: {
+          calendarId: {
+            eq: props.calendarId
+          },
+          day: {
+            le: maxAvailableDay.value
+          }
         },
-        day: {
-          le: maxAvailableDay.value
-        }
-      },
-    });
-    
-    if (errors) {
-      console.error('Errors fetching affirmations:', errors);
-      error.value = 'Failed to load affirmations';
-    } else {
-      affirmations.value = data;
-      console.log('Loaded affirmations:', data);
-      console.log('Days since start date:', daysSinceStartDate.value);
-      console.log('Max available day:', maxAvailableDay.value);
-    }
+        nextToken: nextToken
+      });
+
+      if (errors) {
+        console.error('Errors fetching affirmations:', errors);
+        error.value = 'Failed to load affirmations';
+        break;
+      } else {
+        allAffirmations = [...allAffirmations, ...data];
+        nextToken = newNextToken;
+      }
+    } while (nextToken);
+
+    affirmations.value = allAffirmations;
+    console.log('Loaded affirmations:', allAffirmations.length);
+    console.log('Days since start date:', daysSinceStartDate.value);
+    console.log('Max available day:', maxAvailableDay.value);
   } catch (e) {
     error.value = 'Failed to load affirmations';
     console.error('Error fetching affirmations:', e);
